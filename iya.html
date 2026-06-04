@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Heart Line Animation</title>
+
+<style>
+body{
+    margin:0;
+    background:black;
+    overflow:hidden;
+}
+canvas{
+    display:block;
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const cx = canvas.width / 2;
+const cy = canvas.height / 2;
+
+let lines = [];
+let step = 0;
+
+function heart(t){
+    return {
+        x: 16 * Math.pow(Math.sin(t),3),
+        y: 13*Math.cos(t)
+          -5*Math.cos(2*t)
+          -2*Math.cos(3*t)
+          -Math.cos(4*t)
+    };
+}
+
+function animate(){
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    if(step < 250){
+
+        let t1 = step * 0.05;
+        let t2 = (step + 50) * 0.05;
+
+        let p1 = heart(t1);
+        let p2 = heart(t2);
+
+        lines.push({
+            x1: cx + p1.x * 15,
+            y1: cy - p1.y * 15,
+            x2: cx + p2.x * 15,
+            y2: cy - p2.y * 15
+        });
+
+        step++;
+    }
+
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.shadowColor = "red";
+    ctx.shadowBlur = 10;
+
+    for(let l of lines){
+        ctx.beginPath();
+        ctx.moveTo(l.x1,l.y1);
+        ctx.lineTo(l.x2,l.y2);
+        ctx.stroke();
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
